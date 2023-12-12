@@ -1,10 +1,13 @@
 ## Comfy Store
 
-E-commerce website developed using react, redux tool kit, react query, tailwind CSS and daisyUI.
+An E-commerce website developed using react, react router, redux tool kit, react query, tailwind CSS, and daisyUI.
 
-[Demo](https://ashlynz-comfy-store.netlify.app)
+Demo - [Comfy Sloth](https://ashlynz-comfy-store.netlify.app)
 
 #### Steps
 
-npm install
-npm run dev
+```sh
+npm install && npm run dev
+```
+
+- visit url http://localhost:5173
