@@ -2,7 +2,7 @@
 
 An E-commerce website developed using react, react router, redux tool kit, react query, tailwind CSS, and daisyUI.
 
-Demo - [Comfy Sloth](https://ashlynz-comfy-store.netlify.app)
+Demo - [Comfy Store](https://ashlynz-comfy-store.netlify.app)
 
 #### Steps
 
