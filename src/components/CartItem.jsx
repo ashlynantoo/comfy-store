@@ -12,7 +12,7 @@ const CartItem = ({ cartItem }) => {
   };
 
   const handleAmount = (event) => {
-    dispatch(editItem({ cartID, amount: parseInt(event.target.value) }));
+    dispatch(editItem({ cartID, quantity: parseInt(event.target.value) }));
   };
 
   return (
@@ -41,8 +41,8 @@ const CartItem = ({ cartItem }) => {
             <span className="label-text capitalize">Quantity</span>
           </label>
           <select
-            name="amount"
-            id="amount"
+            name="quantity"
+            id="quantity"
             value={quantity}
             className="mt-2 select select-neutral-content select-bordered select-xs"
             onChange={handleAmount}

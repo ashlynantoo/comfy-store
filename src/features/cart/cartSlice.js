@@ -25,7 +25,7 @@ const cartSlice = createSlice({
         return item.cartID === cartItem.cartID;
       });
       if (selectedItem) {
-        selectedItem.amount += cartItem.amount;
+        selectedItem.quantity += cartItem.quantity;
       } else {
         state.cartItems.push(cartItem);
       }
@@ -50,12 +50,12 @@ const cartSlice = createSlice({
     },
 
     editItem: (state, action) => {
-      const { cartID, amount } = action.payload;
+      const { cartID, quantity } = action.payload;
       const selectedItem = state.cartItems.find((item) => {
         return item.cartID === cartID;
       });
-      const difference = amount - selectedItem.quantity;
-      selectedItem.quantity = amount;
+      const difference = quantity - selectedItem.quantity;
+      selectedItem.quantity = quantity;
       state.numItemsInCart += difference;
       state.subTotal += difference * selectedItem.price;
       cartSlice.caseReducers.calculateTotals(state);
