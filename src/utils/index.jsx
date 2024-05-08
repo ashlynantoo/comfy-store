@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const productionUrl = "https://strapi-store-server.onrender.com/api";
+const baseUrl = "https://ecommerce-store-server-rkso.onrender.com/api/v1";
 
 export const customFetch = axios.create({
-  baseURL: productionUrl,
+  baseURL: baseUrl,
 });
 
 export const navLinks = [

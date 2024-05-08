@@ -1,6 +1,7 @@
-import { useLoaderData } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
 import day from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+import { formatPrice } from "../utils";
 day.extend(advancedFormat);
 
 const OrdersList = () => {
@@ -13,25 +14,39 @@ const OrdersList = () => {
         <table className="table table-zebra">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Address</th>
+              <th className="hidden sm:block">Date</th>
+              <th>Shipping Address</th>
               <th>Products</th>
               <th>Cost</th>
-              <th className="hidden sm:block">Date</th>
             </tr>
           </thead>
           <tbody>
             {orders.map((order) => {
-              const { name, address, numItemsInCart, orderTotal, createdAt } =
-                order.attributes;
+              const {
+                _id: id,
+                total,
+                orderedItems,
+                shippingAddress,
+                createdAt,
+              } = order;
               const date = day(createdAt).format("MMM Do, YYYY - hh:mm A");
               return (
-                <tr key={order.id}>
-                  <td>{name}</td>
-                  <td>{address}</td>
-                  <td>{numItemsInCart}</td>
-                  <td>{orderTotal}</td>
+                <tr key={id}>
                   <td className="hidden sm:block">{date}</td>
+                  <td>{shippingAddress}</td>
+                  <td>
+                    {orderedItems.map((item) => {
+                      const { name, quantity, product } = item;
+                      return (
+                        <div key={product}>
+                          <Link to={`/products/${product}`}>
+                            {quantity} {name}
+                          </Link>
+                        </div>
+                      );
+                    })}
+                  </td>
+                  <td>{formatPrice(total)}</td>
                 </tr>
               );
             })}

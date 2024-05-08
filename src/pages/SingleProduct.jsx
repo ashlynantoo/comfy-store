@@ -18,16 +18,24 @@ export const loader = (queryClient) => {
   return async ({ params }) => {
     const { id } = params;
     const { data } = await queryClient.ensureQueryData(singleProductQuery(id));
-    const product = data.data;
-    return product;
+    const { product } = data;
+    return { product };
   };
 };
 
 const SingleProduct = () => {
-  const product = useLoaderData();
-  const { image, title, price, description, colors, company } =
-    product.attributes;
+  const { product } = useLoaderData();
+  const {
+    _id: id,
+    images,
+    name,
+    price,
+    description,
+    colors,
+    company,
+  } = product;
   const dollarPrice = formatPrice(price);
+  const image = images[0].url;
 
   const [productColor, setProductColor] = useState(colors[0]);
   const [amount, setAmount] = useState(1);
@@ -36,21 +44,21 @@ const SingleProduct = () => {
     setAmount(parseInt(event.target.value));
   };
 
-  const cartProduct = {
-    cartID: product.id + productColor,
-    productID: product.id,
+  const cartItem = {
+    cartID: id + productColor,
+    product: id,
     image,
-    title,
+    name,
     price,
     company,
-    productColor,
-    amount,
+    color: productColor,
+    quantity: amount,
   };
 
   const dispatch = useDispatch();
 
   const addToCart = () => {
-    dispatch(addItem({ product: cartProduct }));
+    dispatch(addItem(cartItem));
   };
 
   return (
@@ -68,11 +76,11 @@ const SingleProduct = () => {
       <div className="mt-6 grid gap-y-8 md:grid-cols-2 md:gap-x-16 place-items-center text-center md:text-left">
         <img
           src={image}
-          alt={title}
+          alt={name}
           className="w-96 h-96 object-cover rounded-lg md:w-full"
         />
         <div>
-          <h1 className="capitalize text-3xl font-bold">{title}</h1>
+          <h1 className="capitalize text-3xl font-bold">{name}</h1>
           <h4 className="text-xl text-neutral-content font-bold mt-2">
             {company}
           </h4>
@@ -104,7 +112,7 @@ const SingleProduct = () => {
           <div className="mt-3 form-control">
             <label htmlFor="amount" className="label">
               <h4 className="text-md font-medium tracking-wider capitalize">
-                amount
+                Quantity
               </h4>
             </label>
             <select

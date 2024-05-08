@@ -4,10 +4,10 @@ import { toast } from "react-toastify";
 const defaultState = {
   cartItems: [],
   numItemsInCart: 0,
-  cartTotal: 0,
-  shipping: 500,
+  subTotal: 0,
+  shippingFee: 500,
   tax: 0,
-  orderTotal: 0,
+  total: 0,
 };
 
 const getCartFromLocalStorage = () => {
@@ -20,31 +20,31 @@ const cartSlice = createSlice({
   initialState: getCartFromLocalStorage() || defaultState,
   reducers: {
     addItem: (state, action) => {
-      const { product } = action.payload;
+      const cartItem = action.payload;
       const selectedItem = state.cartItems.find((item) => {
-        return item.cartID === product.cartID;
+        return item.cartID === cartItem.cartID;
       });
       if (selectedItem) {
-        selectedItem.amount += product.amount;
+        selectedItem.amount += cartItem.amount;
       } else {
-        state.cartItems.push(product);
+        state.cartItems.push(cartItem);
       }
-      state.numItemsInCart += product.amount;
-      state.cartTotal += product.amount * product.price;
+      state.numItemsInCart += cartItem.quantity;
+      state.subTotal += cartItem.quantity * cartItem.price;
       cartSlice.caseReducers.calculateTotals(state);
       toast.success("Item added to the cart");
     },
 
     removeItem: (state, action) => {
-      const { cartID } = action.payload;
+      const cartID = action.payload;
       const selectedItem = state.cartItems.find((item) => {
         return item.cartID === cartID;
       });
       state.cartItems = state.cartItems.filter((item) => {
         return item.cartID !== cartID;
       });
-      state.numItemsInCart -= selectedItem.amount;
-      state.cartTotal -= selectedItem.amount * selectedItem.price;
+      state.numItemsInCart -= selectedItem.quantity;
+      state.subTotal -= selectedItem.quantity * selectedItem.price;
       cartSlice.caseReducers.calculateTotals(state);
       toast.error("Item removed from the cart");
     },
@@ -54,10 +54,10 @@ const cartSlice = createSlice({
       const selectedItem = state.cartItems.find((item) => {
         return item.cartID === cartID;
       });
-      const difference = amount - selectedItem.amount;
-      selectedItem.amount = amount;
+      const difference = amount - selectedItem.quantity;
+      selectedItem.quantity = amount;
       state.numItemsInCart += difference;
-      state.cartTotal += difference * selectedItem.price;
+      state.subTotal += difference * selectedItem.price;
       cartSlice.caseReducers.calculateTotals(state);
       toast.success("Updated the cart");
     },
@@ -68,8 +68,8 @@ const cartSlice = createSlice({
     },
 
     calculateTotals: (state) => {
-      state.tax = 0.1 * state.cartTotal;
-      state.orderTotal = state.cartTotal + state.tax + state.shipping;
+      state.tax = 0.1 * state.subTotal;
+      state.total = state.subTotal + state.tax + state.shippingFee;
       localStorage.setItem("comfy-store-cart", JSON.stringify(state));
     },
   },

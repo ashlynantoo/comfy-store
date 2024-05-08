@@ -7,20 +7,14 @@ import {
   SectionTitle,
 } from "../components";
 
-const url = "/orders";
-
-const ordersQuery = (params, user) => {
+const ordersQuery = (url, user, page) => {
+  const { username, token } = user;
   return {
-    queryKey: [
-      "orders",
-      user.username,
-      params.page ? parseInt(params.page) : 1,
-    ],
+    queryKey: ["orders", username, page],
     queryFn: () => {
       return customFetch.get(url, {
-        params,
         headers: {
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
     },
@@ -37,21 +31,24 @@ export const loader = (store, queryClient) => {
     const params = Object.fromEntries([
       ...new URL(request.url).searchParams.entries(),
     ]);
+    const page = params.page ? parseInt(params.page) : 1;
+    const url = `/orders/showAllMyOrders?page=${page}`;
     try {
       const { data } = await queryClient.ensureQueryData(
-        ordersQuery(params, user)
+        ordersQuery(url, user, page)
       );
-      return { orders: data.data, meta: data.meta };
+      const { orders, meta } = data;
+      return { orders, meta };
     } catch (error) {
       console.log(error);
       const errorMsg =
-        error?.response?.data?.error?.message ||
-        "There was an error retrieving your orders";
+        error?.response?.data?.msg ||
+        "There was an error retrieving your orders!";
       toast.error(errorMsg);
-      if (error?.response?.status === 401 || 403) {
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
         return redirect("/login");
       }
-      return null;
+      return redirect("/orders");
     }
   };
 };

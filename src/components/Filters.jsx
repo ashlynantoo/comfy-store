@@ -2,15 +2,15 @@ import { Form, Link, useLoaderData } from "react-router-dom";
 import { FormInput, FormSelect, FormRange, FormCheckbox } from "../components";
 
 const Filters = () => {
-  const { meta, params } = useLoaderData();
-  const { search, category, company, order, price, shipping } = params;
+  const { meta, queryParams } = useLoaderData();
+  const { name, category, company, sort, price, freeShipping } = queryParams;
   return (
     <Form className="bg-base-200 rounded-md px-8 py-4 grid gap-x-4 gap-y-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-center">
       <FormInput
         label="search product"
         type="search"
-        name="search"
-        defaultValue={search}
+        name="name"
+        defaultValue={name}
         size="input-sm"
       />
       <FormSelect
@@ -29,9 +29,9 @@ const Filters = () => {
       />
       <FormSelect
         label="sort by"
-        name="order"
-        list={["a-z", "z-a", "low", "high"]}
-        defaultValue={order}
+        name="sort"
+        list={["price-low", "price-high", "a-z", "z-a"]}
+        defaultValue={sort}
         size="select-sm"
       />
       <FormRange
@@ -42,8 +42,8 @@ const Filters = () => {
       />
       <FormCheckbox
         label="free shipping"
-        name="shipping"
-        defaultValue={shipping}
+        name="freeShipping"
+        defaultValue={freeShipping}
         size="checkbox-sm"
       />
       <button type="submit" className="btn btn-accent btn-sm">

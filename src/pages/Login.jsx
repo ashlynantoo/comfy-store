@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { loginUser } from "../features/user/userSlice";
 import { useDispatch } from "react-redux";
 
-const url = "/auth/local";
+const url = "/auth/login";
 
 export const action = (store) => {
   return async ({ request }) => {

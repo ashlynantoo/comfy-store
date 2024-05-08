@@ -3,7 +3,7 @@ import { FormInput, SubmitBtn } from "../components";
 import { customFetch } from "../utils";
 import { toast } from "react-toastify";
 
-const url = "/auth/local/register";
+const url = "/auth/register";
 
 export const action = async ({ request }) => {
   const formData = await request.formData();

@@ -1,38 +1,54 @@
 import { Filters, PaginationContainer, ProductsContainer } from "../components";
 import { customFetch } from "../utils";
 
-const url = "/products";
-
-const allProductsQuery = (queryParams) => {
-  const { search, category, company, order, price, shipping, page } =
+const allProductsQuery = (queryParams, url) => {
+  const { name, category, company, sort, price, freeShipping, page } =
     queryParams;
   return {
     queryKey: [
       "products",
-      search ?? "",
+      name ?? "",
       category ?? "all",
       company ?? "all",
-      order ?? "a-z",
+      sort ?? "a-z",
       price ?? 100000,
-      shipping ?? false,
+      freeShipping ?? false,
       page ?? 1,
     ],
     queryFn: () => {
-      return customFetch(url, { queryParams });
+      return customFetch(url);
     },
   };
 };
 
 export const loader = (queryClient) => {
   return async ({ request }) => {
-    const params = Object.fromEntries([
+    const queryParams = Object.fromEntries([
       ...new URL(request.url).searchParams.entries(),
     ]);
+
+    let url = "";
+    if (Object.keys(queryParams).length === 0) {
+      url = "/products";
+    } else if (Object.keys(queryParams).length === 1) {
+      const page = queryParams.page ? queryParams.page : 1;
+      url = `/products?page=${page}`;
+    } else {
+      const { name, category, company, sort, price, freeShipping } =
+        queryParams;
+      const page = queryParams.page ? queryParams.page : 1;
+      if (freeShipping) {
+        url = `/products?name=${name}&category=${category}&company=${company}&sort=${sort}&price=${price}&freeShipping=${freeShipping}&page=${page}`;
+      } else {
+        url = `/products?name=${name}&category=${category}&company=${company}&sort=${sort}&price=${price}&page=${page}`;
+      }
+    }
+
     const { data } = await queryClient.ensureQueryData(
-      allProductsQuery(params)
+      allProductsQuery(queryParams, url)
     );
-    const { data: products, meta } = data;
-    return { products, meta, params };
+    const { products, meta } = data;
+    return { products, meta, queryParams };
   };
 };
 
